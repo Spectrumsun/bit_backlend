@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const cors = require('cors')
 const route = require("./routes/index");
+const { json } = require("body-parser");
 require('dotenv').config();
 
 const port = process.env.PORT || 5000;
@@ -14,9 +15,13 @@ app.use(
     extended: true,
   })
 );
-
-// app.use(express.static('public'))
 app.use("/api/v1", route);
+
+
+app.use("/", (req, res) => {
+  res.status(200).json({ message: 'go to /api/v1'})
+});
+
 
 /* Error handler middleware */
 app.use((err, req, res, next) => {

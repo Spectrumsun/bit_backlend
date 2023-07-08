@@ -2,11 +2,22 @@ const express = require('express');
 const router = express.Router();
 const query = require('../query');
 
+router.get('/', (req, res) => {
+  res.status(200)
+    .json({
+      success: true,
+      message: 'Welcome'
+    });
+});
+
 router.get('/states', async function(req, res, next) {
   try {
-    res.json(await query.getAllState());
+    res.res.status(200).json(await query.getAllState());
   } catch (err) {
-    console.error(`Error while getting states `, err.message);
+    res.res.status(500).json({
+      message: 'Error while getting states',
+      err: err.message
+    });
     next(err);
   }
 });
@@ -16,27 +27,36 @@ router.get('/lga-results', async function(req, res, next) {
   try {
     const data = await query.getLgaResult();
     const convert = mergeObjectsById(data.data);
-    res.json({ result: convert });
+    res.status(200).json({ result: convert });
   } catch (err) {
-    console.error(`Error while getting data `, err.message);
+    res.status(500).json({
+      message: 'Error while getting states',
+      err: err.message
+    });
     next(err);
   }
 });
 
 router.get('/wards', async function(req, res, next) {
   try {
-      res.json(await query.getAllWard());
+      res.status(201).json(await query.getAllWard());
   } catch (err) {
-      console.error(`Error while getting data `, err.message);
+    res.status(500).json({
+      message: 'Error while getting states',
+      err: err.message
+    });
     next(err);
   }
 });
 
 router.get('/lga', async function(req, res, next) {
   try {
-      res.json(await query.getAllLocalGov());
+    res.status(200).json(await query.getAllLocalGov());
   } catch (err) {
-      console.error(`Error while getting data `, err.message);
+    res.status(500).json({
+      message: 'Error while getting states',
+      err: err.message
+    });
     next(err);
   }
 });
@@ -46,10 +66,19 @@ router.post('/new-unit', async function(req, res, next) {
     const save = await query.addPollingUnit(req.body)
     res.json({ data: save, message: 'Successful' });
   } catch (err) {
-      console.error(`Error while getting data `, err.message);
+    res.status(500).json({
+      message: 'Error while getting states',
+      err: err.message
+    });
     next(err);
   }
 });
+
+router.use('*', (req, res) =>
+  res.status(404).json({
+    message: 'That url does not exist on this server 🙅 🚫 🙅 🚫 🙅 🚫 🙅 🚫',
+}));
+
 
 
 function mergeObjectsById(data) {

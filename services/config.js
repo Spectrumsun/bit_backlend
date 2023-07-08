@@ -2,7 +2,7 @@ require('dotenv').config();
 
 const config = {
   db: {
-    host: 'sql7.freemysqlhosting.net',
+    host: process.env.HOST,
     user: process.env.user,
     password: process.env.PASSWORD,
     database: process.env.DATABASE,
